@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xb.mapper.UserMapper">
+
+    <insert id="insert" parameterType="com.xb.entity.User">
+        insert into x_user(username,password,email,phone,status)
+        values (#{username},#{password},#{email},#{phone},#{status})
+    </insert>
+
+    <update id="update" parameterType="com.xb.entity.User">
+        update x_user
+        <set>
+            <if test="username != null and username != ''">
+                username = #{username},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="getRolesByUserId" parameterType="integer" resultType="java.lang.String">
+        SELECT r.role_name
+            from x_user_role u
+             LEFT JOIN x_role r on u.role_id = r.role_id
+                and user_id = #{id}
+    </select>
+
+
+    <select id="queryUsersBySql" parameterType="com.xb.entity.Page" resultType="com.xb.entity.User">
+        select * from x_user
+        <where>
+            <if test="userName != null and userName != ''">
+                username = #{userName}
+            </if>
+            <if test="phone != null and phone != ''">
+                and phone = #{phone}
+            </if>
+        </where>
+        limit #{pageNo},#{pageSize}
+    </select>
+
+
+</mapper>
